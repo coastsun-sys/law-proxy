@@ -439,11 +439,28 @@ def find_legal_basis(
 
     matches = sorted(matches, key=lambda x: x["score"], reverse=True)
 
+# 관련도가 낮은 결과는 제외
+strong_matches = [
+    match for match in matches
+    if match["score"] >= 50
+]
+
+if not strong_matches:
     return {
         "question": question,
         "selected_law": selected_law.get("법령명한글"),
         "mst": mst,
         "keywords": keywords,
         "match_count": len(matches),
-        "matches": matches[:1],
+        "message": "지방자치법 내에서 질문과 직접 관련성이 높은 근거 조문을 찾지 못했습니다. 개인정보 보호법, 주민등록법, 사회보장급여법 등 별도 법령 확인이 필요할 수 있습니다.",
+        "matches": [],
     }
+
+return {
+    "question": question,
+    "selected_law": selected_law.get("법령명한글"),
+    "mst": mst,
+    "keywords": keywords,
+    "match_count": len(strong_matches),
+    "matches": strong_matches[:1],
+}
