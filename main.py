@@ -464,3 +464,35 @@ return {
     "match_count": len(strong_matches),
     "matches": strong_matches[:1],
 }
+
+@app.get("/test-law-api")
+def test_law_api():
+    try:
+        response = requests.get(
+            f"{BASE_URL}/lawService.do",
+            params={
+                "OC": LAW_API_OC,
+                "target": "law",
+                "type": "XML",
+                "MST": "276357",
+            },
+            headers={"User-Agent": "Mozilla/5.0"},
+            timeout=20,
+        )
+
+        response.raise_for_status()
+        data = xmltodict.parse(response.text)
+
+        law_name = data.get("법령", {}).get("기본정보", {}).get("법령명_한글")
+
+        return {
+            "status": "success",
+            "law_name": law_name,
+            "mst": "276357",
+        }
+
+    except Exception as e:
+        return {
+            "status": "failed",
+            "error": str(e),
+        }
