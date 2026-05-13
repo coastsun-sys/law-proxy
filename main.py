@@ -450,5 +450,5 @@ def find_legal_basis(
         "mst": mst,
         "keywords": keywords,
         "match_count": len(matches),
-        "matches": matches[:5],
+        "matches": matches[:1],
     }
