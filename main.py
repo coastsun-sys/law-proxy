@@ -302,6 +302,7 @@ def find_legal_basis(
             "query": law_query,
             "display": 10,
         },
+        headers={"User-Agent": "Mozilla/5.0"},
         timeout=10,
     )
 
@@ -369,6 +370,7 @@ def find_legal_basis(
             "type": "XML",
             "MST": mst,
         },
+        headers={"User-Agent": "Mozilla/5.0"},
         timeout=10,
     )
 
