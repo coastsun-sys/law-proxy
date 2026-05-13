@@ -325,19 +325,31 @@ def find_legal_basis(
     if not keywords:
         keywords = [question]
 
-    detail_response = requests.get(
-        f"{BASE_URL}/lawService.do",
-        params={
-            "OC": LAW_API_OC,
-            "target": "law",
-            "type": "XML",
-            "MST": mst,
-        },
-        headers={"User-Agent": "Mozilla/5.0"},
-        timeout=10,
-    )
+        try:
+        detail_response = requests.get(
+            f"{BASE_URL}/lawService.do",
+            params={
+                "OC": LAW_API_OC,
+                "target": "law",
+                "type": "XML",
+                "MST": mst,
+            },
+            headers={"User-Agent": "Mozilla/5.0"},
+            timeout=20,
+        )
 
-    detail_data = xmltodict.parse(detail_response.text)
+        detail_response.raise_for_status()
+        detail_data = xmltodict.parse(detail_response.text)
+
+    except Exception as e:
+        return {
+            "question": question,
+            "selected_law": selected_law.get("법령명한글"),
+            "mst": mst,
+            "error": "국가법령정보 API 호출 중 오류가 발생했습니다.",
+            "detail": str(e),
+            "matches": [],
+        }
 
     law = detail_data.get("법령", {})
     articles = law.get("조문", {}).get("조문단위", [])
