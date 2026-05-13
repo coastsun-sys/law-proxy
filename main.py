@@ -289,14 +289,12 @@ def find_basis(
 def find_legal_basis(
     question: str = Query(..., description="의원이 물어본 질문 문장"),
 ):
-    # 지방자치법 고정
-selected_law = {
-    "법령명한글": "지방자치법"
-}
+    selected_law = {
+        "법령명한글": "지방자치법"
+    }
 
-mst = "276357"
+    mst = "276357"
 
-    # 3. 질문에서 핵심 키워드 추출
     keywords = []
 
     candidate_keywords = [
@@ -327,7 +325,6 @@ mst = "276357"
     if not keywords:
         keywords = [question]
 
-    # 4. 지방자치법 본문 가져오기
     detail_response = requests.get(
         f"{BASE_URL}/lawService.do",
         params={
@@ -350,7 +347,6 @@ mst = "276357"
 
     matches = []
 
-    # 5. 조문별 관련도 계산
     for article in articles:
         article_text = article.get("조문내용", "") or ""
         article_title = article.get("조문제목", "") or ""
