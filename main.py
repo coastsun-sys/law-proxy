@@ -289,46 +289,12 @@ def find_basis(
 def find_legal_basis(
     question: str = Query(..., description="의원이 물어본 질문 문장"),
 ):
-    # 1. 질문에 따라 우선 검색할 법령명을 정함
-    law_query = "지방자치법"
+    # 지방자치법 고정
+selected_law = {
+    "법령명한글": "지방자치법"
+}
 
-    # 2. 법령 검색으로 MST 찾기
-    search_response = requests.get(
-        f"{BASE_URL}/lawSearch.do",
-        params={
-            "OC": LAW_API_OC,
-            "target": "law",
-            "type": "XML",
-            "query": law_query,
-            "display": 10,
-        },
-        headers={"User-Agent": "Mozilla/5.0"},
-        timeout=10,
-    )
-
-    search_data = xmltodict.parse(search_response.text)
-
-    law_search = search_data.get("LawSearch", {})
-    laws = law_search.get("law", [])
-
-    if isinstance(laws, dict):
-        laws = [laws]
-
-    selected_law = None
-
-    for law in laws:
-        if law.get("법령명한글") == "지방자치법":
-            selected_law = law
-            break
-
-    if not selected_law:
-        return {
-            "question": question,
-            "message": "관련 법령을 찾지 못했습니다.",
-            "matches": [],
-        }
-
-    mst = selected_law.get("법령일련번호")
+mst = "276357"
 
     # 3. 질문에서 핵심 키워드 추출
     keywords = []
